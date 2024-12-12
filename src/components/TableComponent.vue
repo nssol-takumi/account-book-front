@@ -61,7 +61,7 @@
 </script>
 
 <template>
-  <div class="flex flex-col w-50">
+  <div class="flex flex-col">
     <span>{{ props.textMessage }}</span>
     <table class="table-auto border-collapse border border-gray-900 bg-white">
       <thead>

@@ -30,7 +30,7 @@
       // テーブル表示フラグ
       const selectTableFlag = ref(false);
       // 表示フラグ切り替え
-      const isSelectFlag = (flag: boolean) => !flag;
+      const isSelectFlag = (flag: boolean): boolean => !flag;
 
       return { props, formMessage, tableMessage, selectFormFlag, selectTableFlag, isSelectFlag };
     },
@@ -38,27 +38,29 @@
 </script>
 
 <template>
-  <div class="flex gap-5">
-    <button
-      class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg"
-      @click="selectFormFlag = isSelectFlag(selectFormFlag)"
-    >
-      フォーム
-    </button>
-    <button
-      class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg"
-      @click="selectTableFlag = isSelectFlag(selectTableFlag)"
-    >
-      テーブル
-    </button>
+  <div class="heder flexed top-0 left-0 mt-[10px]">
+    <div class="flex gap-5 mx-auto">
+      <button
+        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg max-h-20"
+        @click="selectFormFlag = isSelectFlag(selectFormFlag)"
+      >
+        フォーム
+      </button>
+      <button
+        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg"
+        @click="selectTableFlag = isSelectFlag(selectTableFlag)"
+      >
+        テーブル
+      </button>
+    </div>
   </div>
 
-  <div class="flex flex-col w-50">
-    <div class="flex-1 w-full mx-auto p-5 rounded-lg" v-if="selectFormFlag == true">
+  <div class="content pt-[30px] flex flex-col mx-auto">
+    <div class="flex-1 p-5 rounded-lg" v-if="selectFormFlag == true">
       <FormComponent :textMessage="formMessage" />
     </div>
 
-    <div class="flex-1 w-full mx-auto p-5 rounded-lg" v-if="selectTableFlag == true">
+    <div class="flex-1 p-5 rounded-lg" v-if="selectTableFlag == true">
       <TableComponent :textMessage="tableMessage" />
     </div>
   </div>
