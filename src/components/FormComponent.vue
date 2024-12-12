@@ -26,7 +26,7 @@
   <form method="post" action="">
     <div class="flex flex-col">
       <span>{{ props.textMessage }}</span>
-      <input class="textline border border-gray-900" type="text" id="text1" />
+      <input class="mt-1 px-1 py-1 textline border border-gray-900" type="text" id="text1" />
     </div>
   </form>
 </template>

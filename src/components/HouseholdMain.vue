@@ -41,13 +41,13 @@
   <div class="heder flexed top-0 left-0 mt-[10px]">
     <div class="flex gap-5 mx-auto">
       <button
-        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg max-h-20"
+        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 max-h-20"
         @click="selectFormFlag = isSelectFlag(selectFormFlag)"
       >
         フォーム
       </button>
       <button
-        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 rounded-lg"
+        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5"
         @click="selectTableFlag = isSelectFlag(selectTableFlag)"
       >
         テーブル
