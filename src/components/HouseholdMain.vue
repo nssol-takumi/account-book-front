@@ -24,43 +24,30 @@
       // メッセージ
       const formMessage = 'すきな食べ物を入力してください。';
       const tableMessage = '今月の内訳';
+      // 選択機能
+      const selectedFunction = ref('');
 
-      // フォーム表示フラグ
-      const selectFormFlag = ref(false);
-      // テーブル表示フラグ
-      const selectTableFlag = ref(false);
-      // 表示フラグ切り替え
-      const isSelectFlag = (flag: boolean): boolean => !flag;
-
-      return { props, formMessage, tableMessage, selectFormFlag, selectTableFlag, isSelectFlag };
+      return { props, formMessage, tableMessage, selectedFunction };
     },
   });
 </script>
 
 <template>
-  <div class="heder flexed top-0 left-0 mt-[10px]">
-    <div class="flex gap-5 mx-auto">
-      <button
-        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5 max-h-20"
-        @click="selectFormFlag = isSelectFlag(selectFormFlag)"
-      >
-        フォーム
-      </button>
-      <button
-        class="flex-1 text-bold bg-rose-100 hover:bg-rose-200 active:scale-95 p-5"
-        @click="selectTableFlag = isSelectFlag(selectTableFlag)"
-      >
-        テーブル
-      </button>
-    </div>
+  <div class="h-screen w-auto float-left bg-rose-100">
+    <button class="block text-bold hover:bg-rose-200 active:scale-95 p-5 max-h-20" @click="selectedFunction = 'form'">
+      フォーム
+    </button>
+    <button class="block text-bold hover:bg-rose-200 active:scale-95 p-5" @click="selectedFunction = 'table'">
+      テーブル
+    </button>
   </div>
 
-  <div class="content pt-[30px] flex flex-col mx-auto">
-    <div class="flex-1 p-5 rounded-lg" v-if="selectFormFlag == true">
+  <div class="content pt-[30px] flex flex-col">
+    <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction === 'form'">
       <FormComponent :textMessage="formMessage" />
     </div>
 
-    <div class="flex-1 p-5 rounded-lg" v-if="selectTableFlag == true">
+    <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction == 'table'">
       <TableComponent :textMessage="tableMessage" />
     </div>
   </div>
