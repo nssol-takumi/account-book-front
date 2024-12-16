@@ -47,7 +47,7 @@
       <FormComponent :textMessage="formMessage" />
     </div>
 
-    <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction == 'table'">
+    <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction === 'table'">
       <TableComponent :textMessage="tableMessage" />
     </div>
   </div>
