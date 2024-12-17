@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  /* eslint-disable no-console*/
+
+  import { defineComponent, ref } from 'vue';
+  import { createCalendar } from '@/utils/commonUtils';
+  import type { Calendar } from '@/utils/commonUtils';
+  import { LABEL, COST_LABEL_LIST as costLabelList } from '@/constants/appConstants';
 
   export default defineComponent({
     name: 'FormComponent',
@@ -16,33 +21,40 @@
     },
 
     setup(props) {
-      const YEAR = ['2022', '2023'];
+      // カレンダー作成
+      const calendar: Calendar[] = createCalendar();
+
+      const setYear = ref();
+      const setMonth = ref();
+      const setDate = ref();
+      const setCost = ref();
+
+      console.log(setYear.value, setMonth.value, setDate.value, setCost.value);
 
       // [MEMO]テンプレートで使用するものを返す
-      return { props, YEAR };
+      return { props, calendar, setYear, setMonth, setDate, setCost, LABEL, costLabelList };
     },
   });
-
-  // export function createCalendar(): Calendar[] {
-
-  // }
 </script>
 
 <template>
   <form method="post" action="">
     <div class="display:flex">
       <select>
-        <option value="2024">2024</option>
+        <option value="2024" @input="setYear">2024</option>
       </select>
       <select>
-        <option value="12">12</option>
+        <option value="12" @input="setMonth">12</option>
       </select>
       <select>
-        <option value="1">1</option>
+        <option value="1" v-for="(label, index) in calendar" :key="index" @input="setDate">
+          {{ label.date }}
+        </option>
       </select>
       <select>
-        <option value="食費">食費</option>
-        <option value="固定費">固定費</option>
+        <option v-for="(label, index) in costLabelList" :key="index" :value="costLabelList[index]" @input="setCost">
+          {{ label }}
+        </option>
       </select>
     </div>
     <div class="flex flex-col">
