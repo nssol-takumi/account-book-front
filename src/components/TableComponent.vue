@@ -1,9 +1,10 @@
 <script lang="ts">
   /* eslint-disable no-console*/
-  import { defineComponent, ref, watch } from 'vue';
-  import { createCalendar } from '@/utils/commonUtils';
+  import { defineComponent, ref } from 'vue';
+  import type { PropType } from 'vue';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
   import { TABLE_COMPONENT_HEDER_LABEL as hederLabel, FUNCTION_FORM } from '@/constants/appConstants';
+  import type { FunctionMenu } from '@/constants/appConstants';
 
   export default defineComponent({
     name: 'TableComponent',
@@ -21,30 +22,34 @@
         type: Array<CostTableDate>,
         required: true,
       },
-      // 選択機能
-      selectedFunction: {
-        type: String,
+      // 機能選択関数
+      setSelectedFunction: {
+        type: Function as PropType<(newSelectedFunction: FunctionMenu) => void>,
+        required: true,
+      },
+      // カレンダー選択関数
+      setSelectedCalendar: {
+        type: Function as PropType<
+          (newSelectedYear: number, newSelectedMonth: number, newSelectedDate: number) => void
+        >,
+        required: true,
+      },
+      // カレンダー
+      calendar: {
+        type: Array<Calendar>,
         required: true,
       },
     },
 
-    setup(props, { emit }) {
-      // カレンダー作成
-      const calendar: Calendar[] = createCalendar();
+    setup(props) {
+      // propsからカレンダーコピー
+      const calendar = ref(props.calendar);
+
       // 曜日色配列作成
-      const tableClass = ref(createDayColorArray(calendar));
+      const tableClass = ref(createDayColorArray(calendar.value));
 
-      // ローカルにpropsコピー
-      const localSelectedFunction = ref(props.selectedFunction);
-      // const localSelectedFunction = ref(props.);
-      // 選択機能をフォームに切り替える
-      const handleClick = () => {
-        localSelectedFunction.value = FUNCTION_FORM;
-        emit('update:selectedFunction', localSelectedFunction.value);
-      };
-
-      // [MEMO]テンプレートで使用するものを返す
-      return { props, hederLabel, tableClass, calendar, handleClick };
+      // テンプレートで使用するものを返す
+      return { props, hederLabel, tableClass, calendar, FUNCTION_FORM };
     },
   });
 
@@ -69,7 +74,7 @@
 
 <template>
   <div class="flex flex-col">
-    <span>{{ calendar[0].month }}月の内訳</span>
+    <span>{{ calendar[0].month }}{{ props.textMessage }}</span>
     <table class="mt-1 table-auto border-collapse border border-gray-900 bg-white">
       <thead>
         <tr>
@@ -84,7 +89,14 @@
       </thead>
       <tbody>
         <tr v-for="(costDate, index) in costTableDateArray" :key="index" :class="tableClass[index]">
-          <td class="cell" @click="handleClick()">{{ costDate.date }}</td>
+          <td
+            class="cell"
+            @click="
+              setSelectedFunction(FUNCTION_FORM), setSelectedCalendar(costDate.year, costDate.month, costDate.date)
+            "
+          >
+            {{ costDate.date }}
+          </td>
           <td class="cell">{{ costDate.dayLangJa }}</td>
           <td class="cell">{{ costDate.foodCost }}</td>
           <td class="cell">{{ costDate.fixedCost }}</td>

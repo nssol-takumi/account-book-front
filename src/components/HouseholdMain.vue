@@ -6,39 +6,22 @@
   import TableComponent from './TableComponent.vue';
   import { createCalendar } from '@/utils/commonUtils';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { DAYS } from '@/constants/appConstants';
-
-  // 機能名
-  const FUNCTION_TABLE = 'table' as const;
-  const FUNCTION_FORM = 'form' as const;
-  const FUNCTION_TYPE = [FUNCTION_TABLE, FUNCTION_FORM] as const;
-
-  /**
-   * 機能一覧
-   */
-  type FunctionMenu = (typeof FUNCTION_TYPE)[number];
+  import { DAYS, FUNCTION_TABLE, FUNCTION_FORM } from '@/constants/appConstants';
+  import type { FunctionMenu } from '@/constants/appConstants';
 
   export default defineComponent({
     name: 'HouseholdMain',
 
-    // [MEMO]呼び出す子コンポーネント
+    // 呼び出す子コンポーネント
     components: {
       FormComponent,
       TableComponent,
     },
 
-    // [MEMO]親コンポーネントから受け取ったデータ
-    // props: {
-    //   msg: {
-    //     type: String,
-    //     required: false,
-    //   },
-    // },
-
     setup(props) {
       // メッセージ
       const formMessage = 'を入力してください。';
-      const tableMessage = '今月の内訳';
+      const tableMessage = '月の内訳';
 
       // カレンダー作成
       const calendar: Calendar[] = createCalendar();
@@ -48,12 +31,37 @@
       const fixedCost = ref();
       const costTableDateArray = ref<CostTableDate[]>(createCostTableDate(calendar, foodCost.value, fixedCost.value));
 
-      // 選択機能
+      // 機能選択関数
       const selectedFunction = ref<FunctionMenu>();
+      const setSelectedFunction = (newSelectedFunction: FunctionMenu) => {
+        selectedFunction.value = newSelectedFunction;
+      };
 
-      console.log(costTableDateArray.value);
+      // カレンダー選択関数
+      const selectedYear = ref<number>();
+      const selectedMonth = ref<number>();
+      const selectedDate = ref<number>();
+      const setSelectedCalendar = (newSelectedYear: number, newSelectedMonth: number, newSelectedDate: number) => {
+        selectedYear.value = newSelectedYear;
+        selectedMonth.value = newSelectedMonth;
+        selectedDate.value = newSelectedDate;
+      };
 
-      return { props, formMessage, tableMessage, selectedFunction, FUNCTION_FORM, FUNCTION_TABLE, costTableDateArray };
+      return {
+        props,
+        formMessage,
+        tableMessage,
+        selectedFunction,
+        FUNCTION_FORM,
+        FUNCTION_TABLE,
+        costTableDateArray,
+        setSelectedFunction,
+        setSelectedCalendar,
+        selectedYear,
+        selectedMonth,
+        selectedDate,
+        calendar,
+      };
     },
   });
 
@@ -87,25 +95,34 @@
   <div class="h-screen w-auto float-left bg-rose-100">
     <button
       class="block text-bold hover:bg-rose-200 active:scale-95 p-5 max-h-20"
-      @click="selectedFunction = FUNCTION_FORM"
+      @click="setSelectedFunction(FUNCTION_FORM)"
     >
       フォーム
     </button>
-    <button class="block text-bold hover:bg-rose-200 active:scale-95 p-5" @click="selectedFunction = FUNCTION_TABLE">
+    <button class="block text-bold hover:bg-rose-200 active:scale-95 p-5" @click="setSelectedFunction(FUNCTION_TABLE)">
       テーブル
     </button>
   </div>
 
   <div class="content pt-[30px] flex flex-col">
     <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction === FUNCTION_FORM">
-      <FormComponent :textMessage="formMessage" :costTableDateArray="costTableDateArray" />
+      <FormComponent
+        :textMessage="formMessage"
+        :costTableDateArray="costTableDateArray"
+        :selectedYear="selectedYear"
+        :selectedMonth="selectedMonth"
+        :selectedDate="selectedDate"
+        :calendar="calendar"
+      />
     </div>
 
     <div class="flex-1 p-5 rounded-lg" v-if="selectedFunction === FUNCTION_TABLE">
       <TableComponent
         :textMessage="tableMessage"
         :costTableDateArray="costTableDateArray"
-        v-model:selectedFunction="selectedFunction"
+        :setSelectedFunction="setSelectedFunction"
+        :setSelectedCalendar="setSelectedCalendar"
+        :calendar="calendar"
       />
     </div>
   </div>
