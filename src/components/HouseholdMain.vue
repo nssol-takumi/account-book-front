@@ -9,6 +9,9 @@
   import { DAYS, FUNCTION_TABLE, FUNCTION_FORM, LABELS } from '@/constants/appConstants';
   import type { FunctionMenu } from '@/constants/appConstants';
 
+  import { useTableStore } from '@/stores/table';
+  import { storeToRefs } from 'pinia';
+
   export default defineComponent({
     name: 'HouseholdMain',
 
