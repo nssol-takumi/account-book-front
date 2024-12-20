@@ -3,7 +3,12 @@
   import { defineComponent, ref } from 'vue';
   import type { PropType } from 'vue';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { TABLE_COMPONENT_HEDER_LABEL as hederLabel, FUNCTION_FORM } from '@/constants/appConstants';
+  import {
+    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
+    FUNCTION_FORM,
+    TEXT_COLOR,
+    DAYS_NUMBER,
+  } from '@/constants/appConstants';
   import type { FunctionMenu } from '@/constants/appConstants';
 
   export default defineComponent({
@@ -49,7 +54,7 @@
       const tableClass = ref(createDayColorArray(calendar.value));
 
       // テンプレートで使用するものを返す
-      return { props, hederLabel, tableClass, calendar, FUNCTION_FORM };
+      return { props, HEDER_LABEL, tableClass, calendar, FUNCTION_FORM };
     },
   });
 
@@ -60,12 +65,12 @@
   function createDayColorArray(calendarArray: Calendar[]): string[] {
     const dayColorArray: string[] = [];
     calendarArray.map((calendarArray) => {
-      if (calendarArray.day === 0) {
-        dayColorArray.push('text-red-500');
-      } else if (calendarArray.day === 6) {
-        dayColorArray.push('text-blue-500');
+      if (calendarArray.day === DAYS_NUMBER.SUNDAY) {
+        dayColorArray.push(TEXT_COLOR.TEXT_RED_500);
+      } else if (calendarArray.day === DAYS_NUMBER.SATURDAY) {
+        dayColorArray.push(TEXT_COLOR.TEXT_BLUE_500);
       } else {
-        dayColorArray.push('text-black-500');
+        dayColorArray.push(TEXT_COLOR.TEXT_BLACK_500);
       }
     });
     return dayColorArray;
@@ -79,7 +84,7 @@
       <thead>
         <tr>
           <th
-            v-for="(label, index) in hederLabel"
+            v-for="(label, index) in HEDER_LABEL"
             :key="index"
             class="px-1 py-1 able-auto border-collapse border border-gray-900 bg-red-200"
           >

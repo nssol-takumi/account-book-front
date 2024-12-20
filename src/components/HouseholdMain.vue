@@ -6,7 +6,7 @@
   import TableComponent from './TableComponent.vue';
   import { createCalendar } from '@/utils/commonUtils';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { DAYS, FUNCTION_TABLE, FUNCTION_FORM } from '@/constants/appConstants';
+  import { DAYS, FUNCTION_TABLE, FUNCTION_FORM, LABELS } from '@/constants/appConstants';
   import type { FunctionMenu } from '@/constants/appConstants';
 
   export default defineComponent({
@@ -61,6 +61,7 @@
         selectedMonth,
         selectedDate,
         calendar,
+        LABELS,
       };
     },
   });
@@ -91,16 +92,15 @@
 </script>
 
 <template>
-  {{ selectedFunction }}
   <div class="h-screen w-auto float-left bg-rose-100">
     <button
       class="block text-bold hover:bg-rose-200 active:scale-95 p-5 max-h-20"
       @click="setSelectedFunction(FUNCTION_FORM)"
     >
-      フォーム
+      {{ LABELS.FORM }}
     </button>
     <button class="block text-bold hover:bg-rose-200 active:scale-95 p-5" @click="setSelectedFunction(FUNCTION_TABLE)">
-      テーブル
+      {{ LABELS.TABLE }}
     </button>
   </div>
 

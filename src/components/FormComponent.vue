@@ -3,7 +3,7 @@
   import TableComponent from './TableComponent.vue';
   import { defineComponent, ref } from 'vue';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { LABELS as selectLabels, COST_LABEL_LIST as costLabelList } from '@/constants/appConstants';
+  import { LABELS, COST_LABEL_LIST as COST_LABEL } from '@/constants/appConstants';
 
   export default defineComponent({
     name: 'FormComponent',
@@ -56,11 +56,9 @@
         props.selectedDate !== undefined ? props.selectedDate : calendar.value[0].date
       );
       // 選択された費用名称
-      const selectedCostName = ref<string | null>(costLabelList[0]);
+      const selectedCostName = ref<string | null>(COST_LABEL[0]);
       // 入力された費用
       const inputCost = ref<number | null>(null);
-
-      console.log(selectedYear.value, selectedMonth.value, selectedDate.value);
 
       // テンプレートで使用するものを返す
       return {
@@ -70,8 +68,8 @@
         selectedMonth,
         selectedDate,
         selectedCostName,
-        selectLabels,
-        costLabelList,
+        LABELS,
+        COST_LABEL,
         updateCostTableDate,
         inputCost,
       };
@@ -103,9 +101,9 @@
         selectedCostName !== null
       ) {
         //選択されたラベルの値を更新する
-        if (selectedCostName === selectLabels.FOOD_COST) {
+        if (selectedCostName === LABELS.FOOD_COST) {
           item.foodCost = inputCost;
-        } else if (selectedCostName === selectLabels.FIXED_COST) {
+        } else if (selectedCostName === LABELS.FIXED_COST) {
           item.fixedCost = inputCost;
         }
       }
@@ -128,7 +126,7 @@
       </option>
     </select>
     <select v-model="selectedCostName">
-      <option v-for="(label, index) in costLabelList" :key="index" :value="costLabelList[index]">
+      <option v-for="(label, index) in COST_LABEL" :key="index" :value="COST_LABEL[index]">
         {{ label }}
       </option>
     </select>
@@ -154,7 +152,7 @@
           )
         "
       >
-        追加
+        {{ LABELS.ADD }}
       </button>
     </div>
   </div>
