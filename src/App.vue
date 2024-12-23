@@ -9,9 +9,9 @@
   <div>
     <div>
       <HouseholdMain />
-      <ComponentA />
+      <!-- <ComponentA />
       <ComponentB />
-      <ComponentC />
+      <ComponentC /> -->
     </div>
   </div>
 </template>

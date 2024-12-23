@@ -3,8 +3,8 @@
  */
 export type CostTableDate = Calendar & {
   dayLangJa: string;
-  foodCost: number | null;
-  fixedCost: number | null;
+  foodCost: number | undefined;
+  fixedCost: number | undefined;
 };
 
 /**

@@ -1,15 +1,19 @@
 <script lang="ts">
   /* eslint-disable no-console*/
   import { defineComponent, ref } from 'vue';
-  import type { PropType } from 'vue';
-  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import type { Calendar } from '@/utils/commonUtils';
   import {
     TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
     FUNCTION_FORM,
     TEXT_COLOR,
     DAYS_NUMBER,
   } from '@/constants/appConstants';
-  import type { FunctionMenu } from '@/constants/appConstants';
+
+  import { useFunctionStore } from '@/stores/function';
+  import { useFormListStore } from '@/stores/formList';
+  import { useCostTableStore } from '@/stores/costTable';
+
+  import { storeToRefs } from 'pinia';
 
   export default defineComponent({
     name: 'TableComponent',
@@ -23,23 +27,6 @@
         type: String,
         required: true,
       },
-      costTableDateArray: {
-        type: Array<CostTableDate>,
-        required: true,
-      },
-      // 機能選択関数
-      setSelectedFunction: {
-        type: Function as PropType<(newSelectedFunction: FunctionMenu) => void>,
-        required: true,
-      },
-      // カレンダー選択関数
-      setSelectedCalendar: {
-        type: Function as PropType<
-          (newSelectedYear: number, newSelectedMonth: number, newSelectedDate: number) => void
-        >,
-        required: true,
-      },
-      // カレンダー
       calendar: {
         type: Array<Calendar>,
         required: true,
@@ -47,14 +34,29 @@
     },
 
     setup(props) {
-      // propsからカレンダーコピー
-      const calendar = ref(props.calendar);
-
       // 曜日色配列作成
-      const tableClass = ref(createDayColorArray(calendar.value));
+      const tableClass = ref(createDayColorArray(props.calendar));
+
+      // 機能ストア
+      const functionStore = useFunctionStore();
+
+      // フォームリストストア
+      const formListStore = useFormListStore();
+
+      // コストテーブルデータストア
+      const costTableStore = useCostTableStore();
+      const { costTableDates } = storeToRefs(costTableStore);
 
       // テンプレートで使用するものを返す
-      return { props, HEDER_LABEL, tableClass, calendar, FUNCTION_FORM };
+      return {
+        props,
+        HEDER_LABEL,
+        tableClass,
+        FUNCTION_FORM,
+        functionStore,
+        formListStore,
+        costTableDates,
+      };
     },
   });
 
@@ -93,11 +95,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(costDate, index) in costTableDateArray" :key="index" :class="tableClass[index]">
+        <tr v-for="(costDate, index) in costTableDates" :key="index" :class="tableClass[index]">
           <td
             class="cell"
             @click="
-              setSelectedFunction(FUNCTION_FORM), setSelectedCalendar(costDate.year, costDate.month, costDate.date)
+              functionStore.setSelectedFunction(FUNCTION_FORM),
+                formListStore.setFormList(costDate.year, costDate.month, costDate.date)
             "
           >
             {{ costDate.date }}

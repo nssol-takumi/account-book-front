@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-export const useTableStore = defineStore('table', {
+export const useTableStore = defineStore('costTableStore', {
   // データそのもの
   state: () => ({
     counter: 1,
