@@ -1,5 +1,4 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
   import { COST_LABEL_LIST as COST_LABEL, LABELS } from '@/constants/appConstants';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
   import { defineComponent, ref } from 'vue';

@@ -1,6 +1,4 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
-
   import type { FunctionMenu } from '@/constants/appConstants';
   import { DAYS, FUNCTION_FORM, FUNCTION_TABLE, LABELS } from '@/constants/appConstants';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';

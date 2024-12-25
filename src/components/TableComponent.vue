@@ -1,5 +1,4 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
   import type { FunctionMenu } from '@/constants/appConstants';
   import {
     DAYS_COLOR_DEFINITION,
