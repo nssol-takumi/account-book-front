@@ -1,15 +1,15 @@
 <script lang="ts">
   /* eslint-disable no-console*/
-  import { defineComponent, ref } from 'vue';
-  import type { PropType } from 'vue';
-  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import {
-    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
-    FUNCTION_FORM,
-    TEXT_COLOR,
-    DAYS_NUMBER,
-  } from '@/constants/appConstants';
   import type { FunctionMenu } from '@/constants/appConstants';
+  import {
+    DAYS_COLOR_DEFINITION,
+    FUNCTION_FORM,
+    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
+    TEXT_COLOR,
+  } from '@/constants/appConstants';
+  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import type { PropType } from 'vue';
+  import { defineComponent, ref } from 'vue';
 
   export default defineComponent({
     name: 'TableComponent',
@@ -53,8 +53,14 @@
       // 曜日色配列作成
       const tableClass = ref(createDayColorArray(calendar.value));
 
+      // 日付クリック
+      const clickFunction = (year: number, month: number, date: number) => {
+        props.setSelectedFunction(FUNCTION_FORM);
+        props.setSelectedCalendar(year, month, date);
+      };
+
       // テンプレートで使用するものを返す
-      return { props, HEDER_LABEL, tableClass, calendar, FUNCTION_FORM };
+      return { props, HEDER_LABEL, tableClass, calendar, FUNCTION_FORM, clickFunction };
     },
   });
 
@@ -62,19 +68,16 @@
    * 曜日色配列作成
    * @param calendarArray
    */
-  function createDayColorArray(calendarArray: Calendar[]): string[] {
-    const dayColorArray: string[] = [];
-    calendarArray.map((calendarArray) => {
-      if (calendarArray.day === DAYS_NUMBER.SUNDAY) {
-        dayColorArray.push(TEXT_COLOR.TEXT_RED_500);
-      } else if (calendarArray.day === DAYS_NUMBER.SATURDAY) {
-        dayColorArray.push(TEXT_COLOR.TEXT_BLUE_500);
-      } else {
-        dayColorArray.push(TEXT_COLOR.TEXT_BLACK_500);
-      }
-    });
+  const createDayColorArray = (calendarArray: Calendar[]): string[] => {
+    const dayColorArray = calendarArray.map((calendar) =>
+      String(
+        // calendarArray分比較して対応する色を配列化
+        DAYS_COLOR_DEFINITION.find((dayColor) => calendar.day === dayColor.definition)?.color ??
+          TEXT_COLOR.TEXT_BLACK_500
+      )
+    );
     return dayColorArray;
-  }
+  };
 </script>
 
 <template>
@@ -94,12 +97,7 @@
       </thead>
       <tbody>
         <tr v-for="(costDate, index) in costTableDateArray" :key="index" :class="tableClass[index]">
-          <td
-            class="cell"
-            @click="
-              setSelectedFunction(FUNCTION_FORM), setSelectedCalendar(costDate.year, costDate.month, costDate.date)
-            "
-          >
+          <td class="cell" @click="clickFunction(costDate.year, costDate.month, costDate.date)">
             {{ costDate.date }}
           </td>
           <td class="cell">{{ costDate.dayLangJa }}</td>

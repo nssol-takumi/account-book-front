@@ -28,10 +28,27 @@ export const LABELS = {
 
 // 曜日ラベル
 export const DAYS = ['日', '月', '火', '水', '木', '金', '土'] as const;
+
 export const DAYS_NUMBER = {
   SUNDAY: 0,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
   SATURDAY: 6,
 } as const;
+
+export const DAYS_COLOR_DEFINITION = [
+  {
+    definition: DAYS_NUMBER.SUNDAY,
+    color: TEXT_COLOR.TEXT_RED_500,
+  },
+  {
+    definition: DAYS_NUMBER.SATURDAY,
+    color: TEXT_COLOR.TEXT_BLUE_500,
+  },
+];
 
 //費用ラベルリスト
 export const COST_LABEL_LIST = [LABELS.FOOD_COST, LABELS.FIXED_COST];

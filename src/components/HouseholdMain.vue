@@ -1,13 +1,13 @@
 <script lang="ts">
   /* eslint-disable no-console*/
 
+  import type { FunctionMenu } from '@/constants/appConstants';
+  import { DAYS, FUNCTION_FORM, FUNCTION_TABLE, LABELS } from '@/constants/appConstants';
+  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import { createCalendar } from '@/utils/commonUtils';
   import { defineComponent, ref } from 'vue';
   import FormComponent from './FormComponent.vue';
   import TableComponent from './TableComponent.vue';
-  import { createCalendar } from '@/utils/commonUtils';
-  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { DAYS, FUNCTION_TABLE, FUNCTION_FORM, LABELS } from '@/constants/appConstants';
-  import type { FunctionMenu } from '@/constants/appConstants';
 
   export default defineComponent({
     name: 'HouseholdMain',
@@ -69,12 +69,14 @@
   /**
    * コストテーブルデータ配列作成
    * @param calendarArray
+   * @param foodCost
+   * @param fixedCost
    */
-  export function createCostTableDate(
+  const createCostTableDate = (
     calendarArray: Calendar[],
-    foodCost: number | null,
-    fixedCost: number | null
-  ): CostTableDate[] {
+    foodCost: number | undefined,
+    fixedCost: number | undefined
+  ): CostTableDate[] => {
     // 戻り値作成
     const costTableDateArray: CostTableDate[] = calendarArray.map(
       (calendarArray): CostTableDate => ({
@@ -88,7 +90,7 @@
       })
     );
     return costTableDateArray;
-  }
+  };
 </script>
 
 <template>

@@ -1,9 +1,9 @@
 <script lang="ts">
   /* eslint-disable no-console*/
-  import TableComponent from './TableComponent.vue';
-  import { defineComponent, ref } from 'vue';
+  import { COST_LABEL_LIST as COST_LABEL, LABELS } from '@/constants/appConstants';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { LABELS, COST_LABEL_LIST as COST_LABEL } from '@/constants/appConstants';
+  import { defineComponent, ref } from 'vue';
+  import TableComponent from './TableComponent.vue';
 
   export default defineComponent({
     name: 'FormComponent',
@@ -42,23 +42,16 @@
     setup(props) {
       // propsからカレンダーコピー
       const calendar = ref(props.calendar);
-
       // 選択された年
-      const selectedYear = ref<number | null>(
-        props.selectedYear !== undefined ? props.selectedYear : calendar.value[0].year
-      );
+      const selectedYear = ref<number | undefined>(props.selectedYear ?? calendar.value[0].year);
       // 選択された月
-      const selectedMonth = ref<number | null>(
-        props.selectedMonth !== undefined ? props.selectedMonth : calendar.value[0].month
-      );
+      const selectedMonth = ref<number | undefined>(props.selectedMonth ?? calendar.value[0].month);
       // 選択された日付
-      const selectedDate = ref<number | null>(
-        props.selectedDate !== undefined ? props.selectedDate : calendar.value[0].date
-      );
+      const selectedDate = ref<number | undefined>(props.selectedDate ?? calendar.value[0].date);
       // 選択された費用名称
-      const selectedCostName = ref<string | null>(COST_LABEL[0]);
+      const selectedCostName = ref<string | undefined>(COST_LABEL[0]);
       // 入力された費用
-      const inputCost = ref<number | null>(null);
+      const inputCost = ref<number | undefined>(undefined);
 
       // テンプレートで使用するものを返す
       return {
@@ -70,6 +63,7 @@
         selectedCostName,
         LABELS,
         COST_LABEL,
+        findCostTableDate,
         updateCostTableDate,
         inputCost,
       };
@@ -77,39 +71,54 @@
   });
 
   /**
-   * コストテーブルデータの更新
-   * @param costTableDate
+   * コストテーブルから更新データの検索
+   * @param costTableDates
+   * @param selectedYear
+   * @param selectedMonth
+   * @param selectedDate
+   * @param selectedCostName
+   * @param inputCost
    */
-  function updateCostTableDate(
-    costTableDate: CostTableDate[],
-    selectedYear: number | null,
-    selectedMonth: number | null,
-    selectedDate: number | null,
-    selectedCostName: string | null,
-    inputCost: number | null
-  ) {
-    // eslint-disable-next-line complexity
-    costTableDate.map((item) => {
-      //早期リターン
-      if (selectedYear === undefined || selectedMonth === undefined || selectedDate === undefined) return;
+  const findCostTableDate = (
+    costTableDates: CostTableDate[],
+    selectedYear: number | undefined,
+    selectedMonth: number | undefined,
+    selectedDate: number | undefined,
+    selectedCostName: string | undefined,
+    inputCost: number | undefined
+  ): void => {
+    // 値がundefinedであればfalseに変換する
+    const isValid = !!selectedYear || !!selectedMonth || !!selectedDate;
+    // 早期リターン
+    if (!isValid) return;
 
-      //日付が一致する値を更新する
-      if (
-        item.year === selectedYear &&
-        item.month === selectedMonth &&
-        item.date === selectedDate &&
-        selectedCostName !== null
-      ) {
-        //選択されたラベルの値を更新する
-        if (selectedCostName === LABELS.FOOD_COST) {
-          item.foodCost = inputCost;
-        } else if (selectedCostName === LABELS.FIXED_COST) {
-          item.fixedCost = inputCost;
-        }
-      }
-      return costTableDate;
-    });
-  }
+    const updateDate = costTableDates.find(
+      (item) => item.year === selectedYear && item.month === selectedMonth && item.date === selectedDate
+    );
+    // 抽出した日付を元に更新する
+    updateCostTableDate(selectedCostName, inputCost, updateDate);
+  };
+
+  /**
+   * コストテーブルデータの更新
+   * @param selectedCostName
+   * @param inputCost
+   * @param updateCostTableDate
+   */
+  const updateCostTableDate = (
+    selectedCostName: string | undefined,
+    inputCost: number | undefined,
+    updateCostTableDate: CostTableDate | undefined
+  ): void => {
+    if (updateCostTableDate === undefined) return;
+
+    //選択されたラベルの値を更新する
+    if (selectedCostName === LABELS.FOOD_COST) {
+      updateCostTableDate.foodCost = inputCost;
+    } else if (selectedCostName === LABELS.FIXED_COST) {
+      updateCostTableDate.fixedCost = inputCost;
+    }
+  };
 </script>
 
 <template>
@@ -142,7 +151,7 @@
       <button
         class="mt-1 px-1 py-1 w-12 bg-rose-100 active:scale-95 rounded"
         @click="
-          updateCostTableDate(
+          findCostTableDate(
             props.costTableDateArray,
             selectedYear,
             selectedMonth,
