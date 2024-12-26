@@ -74,9 +74,8 @@
     calendarArray: Calendar[],
     foodCost: number | undefined,
     fixedCost: number | undefined
-  ): CostTableDate[] => {
-    // 戻り値作成
-    const costTableDateArray: CostTableDate[] = calendarArray.map(
+  ): CostTableDate[] =>
+    calendarArray.map(
       (calendarArray): CostTableDate => ({
         year: calendarArray.year,
         month: calendarArray.month,
@@ -87,8 +86,6 @@
         fixedCost,
       })
     );
-    return costTableDateArray;
-  };
 </script>
 
 <template>

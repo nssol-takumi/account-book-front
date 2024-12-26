@@ -67,16 +67,14 @@
    * 曜日色配列作成
    * @param calendarArray
    */
-  const createDayColorArray = (calendarArray: Calendar[]): string[] => {
-    const dayColorArray = calendarArray.map((calendar) =>
+  const createDayColorArray = (calendarArray: Calendar[]): string[] =>
+    calendarArray.map((calendar) =>
       String(
         // calendarArray分比較して対応する色を配列化
         DAYS_COLOR_DEFINITION.find((dayColor) => calendar.day === dayColor.definition)?.color ??
           TEXT_COLOR.TEXT_BLACK_500
       )
     );
-    return dayColorArray;
-  };
 </script>
 
 <template>

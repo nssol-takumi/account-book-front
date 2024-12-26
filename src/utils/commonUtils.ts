@@ -20,7 +20,7 @@ export type Calendar = {
 /**
  * カレンダー作成
  */
-export function createCalendar(): Calendar[] {
+export const createCalendar = (): Calendar[] => {
   // 本日日付取得
   const currentDate = new Date();
   const nowYear = currentDate.getFullYear();
@@ -53,4 +53,4 @@ export function createCalendar(): Calendar[] {
     })
   );
   return calendarArray;
-}
+};
