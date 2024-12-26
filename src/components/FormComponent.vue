@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { COLUMNS, COST_LABEL_LIST as COST_LABEL, LABELS, UPDATE_COST_DEFINITION } from '@/constants/appConstants';
+  import { COST_LABEL_LIST as COST_LABEL, LABELS, UPDATE_COST_DEFINITION } from '@/constants/appConstants';
   import type { Calendar, CostTableDate } from '@/utils/commonUtils';
   import { defineComponent, ref } from 'vue';
   import TableComponent from './TableComponent.vue';
@@ -109,12 +109,16 @@
     inputCost: number | undefined,
     updateCostTableDate: CostTableDate | undefined
   ): void => {
-    if (!updateCostTableDate) return;
+    if (!updateCostTableDate || !inputCost) return;
 
-    const propertyName: keyof CostTableDate =
-      UPDATE_COST_DEFINITION.find((updateCost) => updateCost.definition === selectedCostName)?.updateCost ??
-      COLUMNS.FOOD_COST;
-    (updateCostTableDate[propertyName] as number | undefined) = inputCost;
+    const propertyName: keyof CostTableDate | undefined = UPDATE_COST_DEFINITION.find(
+      (updateCost) => updateCost.definition === selectedCostName
+    )?.updateCost;
+
+    if (!propertyName) {
+      throw new Error(`対応するプロパティが見つかりません: ${selectedCostName}`);
+    }
+    (updateCostTableDate[propertyName] as number) = inputCost;
   };
 </script>
 
