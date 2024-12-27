@@ -20,7 +20,7 @@ export type Calendar = {
 /**
  * カレンダー作成
  */
-export function createCalendar(): Calendar[] {
+export const createCalendar = (): Calendar[] => {
   // 本日日付取得
   const currentDate = new Date();
   const nowYear = currentDate.getFullYear();
@@ -35,11 +35,13 @@ export function createCalendar(): Calendar[] {
   const lastDate = nextMonthFirstDay;
 
   // 今月の全日付取得
-  const calendarDateArray: Date[] = [];
-  for (let i = 1; i <= lastDate.getDate(); i++) {
-    calendarDateArray.push(new Date(firstDay));
-    firstDay.setDate(firstDay.getDate() + 1);
-  }
+  const calendarDateArray: Date[] = Array.from({ length: lastDate.getDate() }, (_, i) => {
+    // つど今月の一日をコピー
+    const newDate = new Date(firstDay);
+    // 今月の一日に対して、インデックス分の日付を加算する
+    newDate.setDate(firstDay.getDate() + i);
+    return newDate;
+  });
 
   // 戻り値作成
   const calendarArray: Calendar[] = calendarDateArray.map(
@@ -51,4 +53,4 @@ export function createCalendar(): Calendar[] {
     })
   );
   return calendarArray;
-}
+};
