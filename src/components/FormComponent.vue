@@ -1,12 +1,12 @@
 <script lang="ts">
   /* eslint-disable no-console*/
-  import TableComponent from './TableComponent.vue';
-  import { defineComponent, ref } from 'vue';
+  import { COST_LABEL_LIST as COST_LABEL, LABELS } from '@/constants/appConstants';
   import type { Calendar } from '@/utils/commonUtils';
-  import { LABELS, COST_LABEL_LIST as COST_LABEL } from '@/constants/appConstants';
+  import { defineComponent, ref } from 'vue';
+  import TableComponent from './TableComponent.vue';
 
-  import { useFormListStore } from '@/stores/formList';
   import { useCostTableStore } from '@/stores/costTable';
+  import { useFormListStore } from '@/stores/formList';
   import { storeToRefs } from 'pinia';
 
   export default defineComponent({
@@ -28,13 +28,15 @@
     },
 
     setup(props) {
+      // propsからカレンダーコピー
+      const calendar = ref(props.calendar);
       // フォームリストストア
       const formListStore = useFormListStore();
       const { selectedYear, selectedMonth, selectedDate } = storeToRefs(formListStore);
       formListStore.setFormList(
-        selectedYear.value !== undefined ? selectedYear.value : props.calendar[0].year,
-        selectedMonth.value !== undefined ? selectedMonth.value : props.calendar[0].month,
-        selectedDate.value !== undefined ? selectedDate.value : props.calendar[0].date
+        !!selectedYear.value ? selectedYear.value : calendar.value[0].year,
+        !!selectedMonth.value ? selectedMonth.value : calendar.value[0].month,
+        !!selectedDate.value ? selectedDate.value : calendar.value[0].date
       );
 
       // コストテーブルデータストア
@@ -92,7 +94,7 @@
       <button
         class="mt-1 px-1 py-1 w-12 bg-rose-100 active:scale-95 rounded"
         @click="
-          costTableStore.updateCostTableDates(
+          costTableStore.findCostTableDate(
             costTableDates,
             selectedYear,
             selectedMonth,

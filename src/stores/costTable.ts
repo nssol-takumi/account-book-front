@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { UPDATE_COST_DEFINITION } from '@/constants/appConstants';
 import type { CostTableDate } from '@/utils/commonUtils';
-import { LABELS } from '@/constants/appConstants';
+import { defineStore } from 'pinia';
 
 export const useCostTableStore = defineStore('costTableStore', {
   // データそのもの
@@ -26,17 +26,15 @@ export const useCostTableStore = defineStore('costTableStore', {
     },
 
     /**
-     * 費用テーブル更新
+     * コストテーブルから更新データの検索
      * @param costTableDates
      * @param selectedYear
      * @param selectedMonth
      * @param selectedDate
      * @param selectedCostName
      * @param inputCost
-     * @returns
      */
-    // eslint-disable-next-line complexity
-    updateCostTableDates(
+    findCostTableDate(
       costTableDates: CostTableDate[],
       selectedYear: number | undefined,
       selectedMonth: number | undefined,
@@ -44,24 +42,39 @@ export const useCostTableStore = defineStore('costTableStore', {
       selectedCostName: string | undefined,
       inputCost: number | undefined
     ) {
-      //早期リターン
-      if (selectedYear === undefined || selectedMonth === undefined || selectedDate === undefined) {
-        return;
-      }
-      const updateCostTableDate = costTableDates.find(
+      // 値がundefinedであればfalseに変換する
+      const isValid = !!selectedYear || !!selectedMonth || !!selectedDate;
+      // 早期リターン
+      if (!isValid) return;
+
+      const updateDate = costTableDates.find(
         (item) => item.year === selectedYear && item.month === selectedMonth && item.date === selectedDate
       );
+      // 抽出した日付を元に更新する
+      this.updateCostTableDate(selectedCostName, inputCost, updateDate);
+    },
 
-      if (updateCostTableDate === undefined) {
-        return;
-      }
+    /**
+     * コストテーブルデータの更新
+     * @param selectedCostName
+     * @param inputCost
+     * @param updateCostTableDate
+     */
+    updateCostTableDate(
+      selectedCostName: string | undefined,
+      inputCost: number | undefined,
+      updateCostTableDate: CostTableDate | undefined
+    ) {
+      if (!updateCostTableDate || !inputCost) return;
 
-      //選択されたラベルの値を更新する
-      if (selectedCostName === LABELS.FOOD_COST) {
-        updateCostTableDate.foodCost = inputCost;
-      } else if (selectedCostName === LABELS.FIXED_COST) {
-        updateCostTableDate.fixedCost = inputCost;
+      const propertyName: keyof CostTableDate | undefined = UPDATE_COST_DEFINITION.find(
+        (updateCost) => updateCost.definition === selectedCostName
+      )?.updateCost;
+
+      if (!propertyName) {
+        throw new Error(`対応するプロパティが見つかりません: ${selectedCostName}`);
       }
+      (updateCostTableDate[propertyName] as number) = inputCost;
     },
   },
 });

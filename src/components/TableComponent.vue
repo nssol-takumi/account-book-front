@@ -1,17 +1,16 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
-  import { defineComponent, ref } from 'vue';
-  import type { Calendar } from '@/utils/commonUtils';
   import {
-    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
+    DAYS_COLOR_DEFINITION,
     FUNCTION_FORM,
+    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
     TEXT_COLOR,
-    DAYS_NUMBER,
   } from '@/constants/appConstants';
+  import type { Calendar } from '@/utils/commonUtils';
+  import { defineComponent, ref } from 'vue';
 
-  import { useFunctionStore } from '@/stores/function';
-  import { useFormListStore } from '@/stores/formList';
   import { useCostTableStore } from '@/stores/costTable';
+  import { useFormListStore } from '@/stores/formList';
+  import { useFunctionStore } from '@/stores/function';
 
   import { storeToRefs } from 'pinia';
 
@@ -34,8 +33,11 @@
     },
 
     setup(props) {
+      // propsからカレンダーコピー
+      const calendar = ref(props.calendar);
+
       // 曜日色配列作成
-      const tableClass = ref(createDayColorArray(props.calendar));
+      const tableClass = ref(createDayColorArray(calendar.value));
 
       // 機能ストア
       const functionStore = useFunctionStore();
@@ -47,6 +49,11 @@
       const costTableStore = useCostTableStore();
       const { costTableDates } = storeToRefs(costTableStore);
 
+      // 日付クリック
+      const clickFunction = (year: number, month: number, date: number) => {
+        functionStore.setSelectedFunction(FUNCTION_FORM), formListStore.setFormList(year, month, date);
+      };
+
       // テンプレートで使用するものを返す
       return {
         props,
@@ -56,6 +63,7 @@
         functionStore,
         formListStore,
         costTableDates,
+        clickFunction,
       };
     },
   });
@@ -64,19 +72,14 @@
    * 曜日色配列作成
    * @param calendarArray
    */
-  function createDayColorArray(calendarArray: Calendar[]): string[] {
-    const dayColorArray: string[] = [];
-    calendarArray.map((calendarArray) => {
-      if (calendarArray.day === DAYS_NUMBER.SUNDAY) {
-        dayColorArray.push(TEXT_COLOR.TEXT_RED_500);
-      } else if (calendarArray.day === DAYS_NUMBER.SATURDAY) {
-        dayColorArray.push(TEXT_COLOR.TEXT_BLUE_500);
-      } else {
-        dayColorArray.push(TEXT_COLOR.TEXT_BLACK_500);
-      }
-    });
-    return dayColorArray;
-  }
+  const createDayColorArray = (calendarArray: Calendar[]): string[] =>
+    calendarArray.map((calendar) =>
+      String(
+        // calendarArray分比較して対応する色を配列化
+        DAYS_COLOR_DEFINITION.find((dayColor) => calendar.day === dayColor.definition)?.color ??
+          TEXT_COLOR.TEXT_BLACK_500
+      )
+    );
 </script>
 
 <template>
@@ -96,13 +99,7 @@
       </thead>
       <tbody>
         <tr v-for="(costDate, index) in costTableDates" :key="index" :class="tableClass[index]">
-          <td
-            class="cell"
-            @click="
-              functionStore.setSelectedFunction(FUNCTION_FORM),
-                formListStore.setFormList(costDate.year, costDate.month, costDate.date)
-            "
-          >
+          <td class="cell" @click="clickFunction(costDate.year, costDate.month, costDate.date)">
             {{ costDate.date }}
           </td>
           <td class="cell">{{ costDate.dayLangJa }}</td>

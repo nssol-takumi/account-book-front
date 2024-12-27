@@ -1,16 +1,16 @@
 <script lang="ts">
   /* eslint-disable no-console*/
 
+  import { DAYS, FUNCTION_FORM, FUNCTION_TABLE, LABELS } from '@/constants/appConstants';
+  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import { createCalendar } from '@/utils/commonUtils';
   import { defineComponent } from 'vue';
   import FormComponent from './FormComponent.vue';
   import TableComponent from './TableComponent.vue';
-  import { createCalendar } from '@/utils/commonUtils';
-  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
-  import { DAYS, FUNCTION_TABLE, FUNCTION_FORM, LABELS } from '@/constants/appConstants';
 
-  import { useFunctionStore } from '@/stores/function';
-  import { useFormListStore } from '@/stores/formList';
   import { useCostTableStore } from '@/stores/costTable';
+  import { useFormListStore } from '@/stores/formList';
+  import { useFunctionStore } from '@/stores/function';
 
   import { storeToRefs } from 'pinia';
 
@@ -66,9 +66,8 @@
    * コストテーブルデータ配列作成
    * @param calendarArray
    */
-  export function createCostTableDate(calendarArray: Calendar[]): CostTableDate[] {
-    // 戻り値作成
-    const costTableDateArray: CostTableDate[] = calendarArray.map(
+  const createCostTableDate = (calendarArray: Calendar[]): CostTableDate[] =>
+    calendarArray.map(
       (calendarArray): CostTableDate => ({
         year: calendarArray.year,
         month: calendarArray.month,
@@ -79,8 +78,6 @@
         fixedCost: undefined,
       })
     );
-    return costTableDateArray;
-  }
 </script>
 
 <template>

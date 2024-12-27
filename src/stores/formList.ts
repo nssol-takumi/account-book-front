@@ -11,7 +11,7 @@ export const useFormListStore = defineStore('formListStore', {
   getters: {},
   // stateで定義した値を操作したり、取得する関数
   actions: {
-    setFormList(newSelectedYear: number, newMonth: number, newDate: number) {
+    setFormList(newSelectedYear: number | undefined, newMonth: number | undefined, newDate: number | undefined) {
       this.selectedYear = newSelectedYear;
       this.selectedMonth = newMonth;
       this.selectedDate = newDate;
