@@ -1,61 +1,85 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
-  import { defineComponent } from 'vue';
+  import type { FunctionMenu } from '@/constants/appConstants';
+  import {
+    DAYS_COLOR_DEFINITION,
+    FUNCTION_FORM,
+    TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
+    TEXT_COLOR,
+  } from '@/constants/appConstants';
+  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import type { PropType } from 'vue';
+  import { defineComponent, ref } from 'vue';
 
   export default defineComponent({
     name: 'TableComponent',
 
-    // [MEMO]呼び出す子コンポーネント
+    // 呼び出す子コンポーネント
     components: {},
 
-    // [MEMO]親コンポーネントから受け取ったデータ
+    // 親コンポーネントから受け取ったデータ
     props: {
       textMessage: {
         type: String,
         required: true,
       },
+      costTableDateArray: {
+        type: Array<CostTableDate>,
+        required: true,
+      },
+      // 機能選択関数
+      setSelectedFunction: {
+        type: Function as PropType<(newSelectedFunction: FunctionMenu) => void>,
+        required: true,
+      },
+      // カレンダー選択関数
+      setSelectedCalendar: {
+        type: Function as PropType<
+          (newSelectedYear: number, newSelectedMonth: number, newSelectedDate: number) => void
+        >,
+        required: true,
+      },
+      // カレンダー
+      calendar: {
+        type: Array<Calendar>,
+        required: true,
+      },
     },
 
     setup(props) {
-      // テーブルデータ
-      const TABLE_DATES = [1, 2, 3, 4].map((item, index) => ({
-        row1: 20241201 + index,
-        row2: item * 2,
-        row3: item * 3,
-        row4: item * 4,
-        row5: item * 5,
-        row6: item * 6,
-        row7: item * 7,
-        row8: item * 8,
-        row9: item * 9,
-        row10: item * 10,
-      }));
+      // propsからカレンダーコピー
+      const calendar = ref(props.calendar);
 
-      console.log(TABLE_DATES);
+      // 曜日色配列作成
+      const tableClass = ref(createDayColorArray(calendar.value));
 
-      // ヘッダーラベル
-      const HEDER_LABEL = {
-        HEDER_1: '日付',
-        HEDER_2: '支出１',
-        HEDER_3: '支出２',
-        HEDER_4: '支出３',
-        HEDER_5: '支出４',
-        HEDER_6: '支出５',
-        HEDER_7: '支出６',
-        HEDER_8: '支出７',
-        HEDER_9: '支出８',
-        HEDER_10: '支出９',
+      // 日付クリック
+      const clickFunction = (year: number, month: number, date: number) => {
+        props.setSelectedFunction(FUNCTION_FORM);
+        props.setSelectedCalendar(year, month, date);
       };
 
-      // [MEMO]テンプレートで使用するものを返す
-      return { props, HEDER_LABEL, TABLE_DATES };
+      // テンプレートで使用するものを返す
+      return { props, HEDER_LABEL, tableClass, calendar, FUNCTION_FORM, clickFunction };
     },
   });
+
+  /**
+   * 曜日色配列作成
+   * @param calendarArray
+   */
+  const createDayColorArray = (calendarArray: Calendar[]): string[] =>
+    calendarArray.map((calendar) =>
+      String(
+        // calendarArray分比較して対応する色を配列化
+        DAYS_COLOR_DEFINITION.find((dayColor) => calendar.day === dayColor.definition)?.color ??
+          TEXT_COLOR.TEXT_BLACK_500
+      )
+    );
 </script>
 
 <template>
   <div class="flex flex-col">
-    <span>{{ props.textMessage }}</span>
+    <span>{{ calendar[0].month }}{{ props.textMessage }}</span>
     <table class="mt-1 table-auto border-collapse border border-gray-900 bg-white">
       <thead>
         <tr>
@@ -69,10 +93,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(tableDate, index) in TABLE_DATES" :key="index">
-          <td v-for="(value, key, index) in tableDate" :key="'id' + index" class="cell table-auto border-collapse">
-            {{ value }}
+        <tr v-for="(costDate, index) in costTableDateArray" :key="index" :class="tableClass[index]">
+          <td class="cell" @click="clickFunction(costDate.year, costDate.month, costDate.date)">
+            {{ costDate.date }}
           </td>
+          <td class="cell">{{ costDate.dayLangJa }}</td>
+          <td class="cell">{{ costDate.foodCost }}</td>
+          <td class="cell">{{ costDate.fixedCost }}</td>
         </tr>
       </tbody>
     </table>
