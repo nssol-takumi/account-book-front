@@ -5,7 +5,7 @@
     TABLE_COMPONENT_HEDER_LABEL as HEDER_LABEL,
     TEXT_COLOR,
   } from '@/constants/appConstants';
-  import type { Calendar } from '@/utils/commonUtils';
+  import type { Calendar } from '@/types/appType';
   import { defineComponent, ref } from 'vue';
 
   import { useCostTableStore } from '@/stores/costTable';
@@ -48,6 +48,9 @@
       // コストテーブルデータストア
       const costTableStore = useCostTableStore();
       const { costTableDates } = storeToRefs(costTableStore);
+
+      // APIから取得したコストデータでテーブルデータストアを上書き
+      costTableStore.getCostDates();
 
       // 日付クリック
       const clickFunction = (year: number, month: number, date: number) => {

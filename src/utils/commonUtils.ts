@@ -1,21 +1,4 @@
-/**
- * コストテーブル型
- */
-export type CostTableDate = Calendar & {
-  dayLangJa: string;
-  foodCost: number | undefined;
-  fixedCost: number | undefined;
-};
-
-/**
- * カレンダー型
- */
-export type Calendar = {
-  year: number;
-  month: number;
-  date: number;
-  day: number;
-};
+import type { Calendar } from '@/types/appType';
 
 /**
  * カレンダー作成

@@ -1,6 +1,5 @@
+import type { FunctionMenu } from '@/types/appType';
 import { defineStore } from 'pinia';
-
-import type { FunctionMenu } from '@/constants/appConstants';
 
 export const useFunctionStore = defineStore('functionStore', {
   // データそのもの

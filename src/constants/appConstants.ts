@@ -1,13 +1,9 @@
-import type { CostTableDate } from '@/utils/commonUtils';
+import type { CostTableDate } from '@/types/appType';
+
 // 機能名
 export const FUNCTION_TABLE = 'table' as const;
 export const FUNCTION_FORM = 'form' as const;
 export const FUNCTION_TYPE = [FUNCTION_TABLE, FUNCTION_FORM] as const;
-
-/**
- * 機能一覧型
- */
-export type FunctionMenu = (typeof FUNCTION_TYPE)[number];
 
 // 文字色名
 export const TEXT_COLOR = {
@@ -76,3 +72,7 @@ export const UPDATE_COST_DEFINITION = [
 
 // ヘッダーラベル
 export const TABLE_COMPONENT_HEDER_LABEL = [LABELS.DATE, LABELS.DAY, LABELS.FOOD_COST, LABELS.FIXED_COST];
+
+// APIURL
+export const GET_COST_DATES_URL = 'http://127.0.0.1:8000/costdates/';
+export const POST_COST_DATE_URL = 'http://127.0.0.1:8000/costdates/';

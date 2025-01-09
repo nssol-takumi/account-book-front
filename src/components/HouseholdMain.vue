@@ -1,8 +1,6 @@
 <script lang="ts">
-  /* eslint-disable no-console*/
-
   import { DAYS, FUNCTION_FORM, FUNCTION_TABLE, LABELS } from '@/constants/appConstants';
-  import type { Calendar, CostTableDate } from '@/utils/commonUtils';
+  import type { Calendar, CostTableDate } from '@/types/appType';
   import { createCalendar } from '@/utils/commonUtils';
   import { defineComponent } from 'vue';
   import FormComponent from './FormComponent.vue';
